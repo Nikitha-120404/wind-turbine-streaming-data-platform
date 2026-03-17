@@ -1,0 +1,16 @@
+# infra/grafana/provisioning/dashboards/dashboards.yml
+#
+# Tells Grafana where to find pre-built dashboard JSON files.
+
+apiVersion: 1
+
+providers:
+  - name: Wind Turbine Platform
+    orgId: 1
+    folder: Wind Turbine
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

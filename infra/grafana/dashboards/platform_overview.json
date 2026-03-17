@@ -1,0 +1,443 @@
+{
+  "title": "Wind Turbine Platform \u2014 Overview",
+  "uid": "wt-platform-overview",
+  "schemaVersion": 38,
+  "version": 2,
+  "refresh": "10s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "tags": [
+    "wind-turbine",
+    "platform"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Services Up",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(wt_service_up)",
+          "legendFormat": "Services",
+          "datasource": "Prometheus"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 3
+              },
+              {
+                "color": "green",
+                "value": 4
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Events Published / min",
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(wt_events_published_total[1m])) * 60",
+          "legendFormat": "events/min",
+          "datasource": "Prometheus"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Anomaly Alerts (last 5m)",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(wt_anomaly_alerts_total[5m]))",
+          "legendFormat": "alerts",
+          "datasource": "Prometheus"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "DLQ Messages (last 5m)",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(wt_dlq_messages_total[5m]))",
+          "legendFormat": "dlq",
+          "datasource": "Prometheus"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "DB Inserts / min",
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(wt_db_inserts_total[1m])) * 60",
+          "legendFormat": "inserts/min",
+          "datasource": "Prometheus"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Event Throughput",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(wt_events_published_total[1m])) by (turbine_id)",
+          "legendFormat": "published - {{turbine_id}}",
+          "datasource": "Prometheus"
+        },
+        {
+          "expr": "sum(rate(wt_events_consumed_total[1m])) by (consumer_group)",
+          "legendFormat": "consumed - {{consumer_group}}",
+          "datasource": "Prometheus"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Processing Latency (p50 / p95 / p99)",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(wt_processing_latency_seconds_bucket[2m])) by (le))",
+          "legendFormat": "p50",
+          "datasource": "Prometheus"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(wt_processing_latency_seconds_bucket[2m])) by (le))",
+          "legendFormat": "p95",
+          "datasource": "Prometheus"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(wt_processing_latency_seconds_bucket[2m])) by (le))",
+          "legendFormat": "p99",
+          "datasource": "Prometheus"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Anomaly Alerts by Rule",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(wt_anomaly_alerts_total[2m])) by (rule_name, severity)",
+          "legendFormat": "{{severity}} - {{rule_name}}",
+          "datasource": "Prometheus"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "DB Write Latency (p95)",
+      "gridPos": {
+        "x": 12,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(wt_db_write_latency_seconds_bucket[2m])) by (le, table_name))",
+          "legendFormat": "p95 - {{table_name}}",
+          "datasource": "Prometheus"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Publish Failures & DLQ",
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(wt_events_publish_failed_total[2m])) by (error_type)",
+          "legendFormat": "publish fail - {{error_type}}",
+          "datasource": "Prometheus"
+        },
+        {
+          "expr": "sum(rate(wt_dlq_messages_total[2m])) by (error_type)",
+          "legendFormat": "DLQ - {{error_type}}",
+          "datasource": "Prometheus"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Producer Lag (seconds behind real-time)",
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "wt_producer_lag_seconds",
+          "legendFormat": "{{turbine_id}}",
+          "datasource": "Prometheus"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Bearing & Gearbox Temperatures",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(wt_anomaly_alerts_total{rule_name=~\"bearing.*|gearbox.*\"}[2m])) by (le, rule_name))",
+          "legendFormat": "alert rate - {{rule_name}}",
+          "datasource": "Prometheus"
+        }
+      ],
+      "description": "Alert rates for bearing and gearbox temperature rules derived from original Bearing_Temp and GearBoxSumpTemp sensor fields"
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Extended Sensor Alert Rates (Bearing / Gear / Gearbox)",
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(wt_anomaly_alerts_total{rule_name=~\"bearing_temp.*|gearbox_sump.*|gear_temp.*\"}[2m])) by (rule_name, severity)",
+          "legendFormat": "{{severity}} \u2014 {{rule_name}}",
+          "datasource": "Prometheus"
+        }
+      ],
+      "description": "Alert rates for the 6 new rules covering extended sensor fields: bearing_temp, gearbox_sump_temp, gear_temp (WARNING + CRITICAL)"
+    },
+    {
+      "id": 14,
+      "type": "stat",
+      "title": "Active Turbines (last 5m)",
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "count(count by (turbine_id) (rate(wt_events_published_total[5m])))",
+          "legendFormat": "turbines",
+          "datasource": "Prometheus"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "description": "Number of turbines actively publishing events. Full fleet = 12 (matching original wind_turbine_sensorlog.py)"
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "All Anomaly Alert Rates by Severity",
+      "gridPos": {
+        "x": 4,
+        "y": 36,
+        "w": 20,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(wt_anomaly_alerts_total{severity=\"CRITICAL\"}[2m])) by (rule_name)",
+          "legendFormat": "CRITICAL \u2014 {{rule_name}}",
+          "datasource": "Prometheus"
+        },
+        {
+          "expr": "sum(rate(wt_anomaly_alerts_total{severity=\"WARNING\"}[2m])) by (rule_name)",
+          "legendFormat": "WARNING \u2014 {{rule_name}}",
+          "datasource": "Prometheus"
+        }
+      ],
+      "description": "All 15 anomaly rules: 9 original (temp, vibration, power, downtime, overspeed) + 6 extended sensor rules (bearing, gearbox, gear temperatures)"
+    }
+  ]
+}

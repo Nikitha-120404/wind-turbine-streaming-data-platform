@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "wt_producer"
+    static_configs:
+      - targets: ["producer:8001"]
+
+  - job_name: "wt_processor"
+    static_configs:
+      - targets: ["processor:8002"]
+
+  - job_name: "wt_db_writer"
+    static_configs:
+      - targets: ["db_writer:8003"]
+
+  - job_name: "wt_ops_api"
+    static_configs:
+      - targets: ["ops_api:8004"]
