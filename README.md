@@ -1,6 +1,6 @@
 # Wind Turbine Telemetry Platform
 
-A real-time streaming platform for wind turbine telemetry, anomaly detection, and operational monitoring. Built on Apache Kafka, TimescaleDB, FastAPI, Prometheus, and Grafana — fully runnable locally with Docker Compose.
+A  real-time streaming platform for wind turbine telemetry, anomaly detection, and operational monitoring. Built on Apache Kafka, TimescaleDB, FastAPI, Prometheus, and Grafana — fully runnable locally with Docker Compose.
 
 This platform was evolved from a working Kafka + TimescaleDB prototype with three original scripts:
 - `wind_turbine_sensorlog.py` — 12-turbine simulator with 14 sensor fields
