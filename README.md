@@ -1,71 +1,68 @@
-# 🌪️ Wind Turbine Streaming Data Platform
+# Wind Turbine Streaming Data Platform
 
-This project simulates wind turbine sensor data and processes it through a real-time data streaming pipeline using **Apache Kafka**, **Python services**, and **TimescaleDB** for time-series storage.  
-The system also includes **Prometheus and Grafana** for monitoring and visualization.
+A real-time data streaming platform that simulates wind turbine telemetry, processes events using Kafka, stores processed data in TimescaleDB, and visualizes system metrics using Prometheus and Grafana.
 
----
-
-# 🏗️ Architecture Flow
-
-Wind Turbine Sensor Simulator  
-↓  
-Kafka Producer  
-↓  
-Kafka Broker  
-↓  
-Kafka Consumer  
-↓  
-TimescaleDB  
-↓  
-Continuous Aggregates & Analytics  
-↓  
-Grafana Dashboards  
+This project demonstrates a modern data pipeline architecture using containerized microservices for ingestion, processing, monitoring, and storage.
 
 ---
 
-# ⚙️ Technologies Used
+# System Architecture
 
-- Python  
-- Apache Kafka  
-- Confluent Kafka Client  
-- PostgreSQL / TimescaleDB  
-- SQL  
-- Docker  
-- Prometheus  
-- Grafana  
-- Pytest  
+The platform is composed of several services working together to process wind turbine telemetry data.
+
+Telemetry events are generated, streamed through Kafka, processed for anomalies, stored in TimescaleDB, and monitored through Prometheus and Grafana dashboards.
 
 ---
 
-# 📂 Project Structure
+# Data Flow
+
+1. Wind turbine telemetry events are simulated by the producer service.
+
+2. Events are published to the Kafka topic `windturbine-raw`.
+
+3. The processor service consumes events and performs validation and anomaly detection.
+
+4. Processed telemetry data is written to TimescaleDB.
+
+5. Alerts and abnormal events are published to additional Kafka topics.
+
+6. Prometheus collects metrics from services.
+
+7. Grafana visualizes metrics and system health through dashboards.
+
+---
+
+# Project Structure
 
 
 wind-turbine-streaming-data-platform
 │
-├── infra/
-│ ├── grafana/
-│ ├── prometheus/
-│ └── postgres/
+├── images
+│ ├── grafana_dashboard.png
+│ ├── kafka_stream_output.png
+│ ├── prometheus_metrics.png
+│ └── timescaledb_output.png
 │
-├── scripts/
+├── sample_output
+│ ├── telemetry_sample.csv
+│ └── alerts_sample.csv
 │
-├── services/
+├── infra
+│ ├── grafana
+│ ├── prometheus
+│ └── postgres
 │
-├── shared/
-│ ├── config.py
-│ ├── kafka_admin.py
-│ ├── logging_config.py
-│ ├── metrics.py
-│ └── schema.py
+├── scripts
 │
-├── tests/
-│ ├── test_config.py
-│ ├── test_schema.py
-│ ├── test_simulator.py
-│ └── test_anomaly_detector.py
+├── services
+│ ├── producer
+│ ├── processor
+│ ├── db_writer
+│ └── ops_api
 │
-├── .env.example
-├── .gitignore
+├── shared
+├── tests
+│
 ├── docker-compose.yml
 ├── requirements.txt
 ├── pytest.ini
@@ -74,69 +71,142 @@ wind-turbine-streaming-data-platform
 
 ---
 
-# 🌊 Data Pipeline Flow
+# Technologies Used
 
-Wind Turbine Simulator generates sensor data  
-↓  
-Kafka Producer publishes events to Kafka topics  
-↓  
-Kafka Broker manages streaming messages  
-↓  
-Kafka Consumer services process events  
-↓  
-TimescaleDB stores turbine metrics as time-series data  
-↓  
-Continuous aggregates generate analytical insights  
-↓  
-Prometheus collects service metrics  
-↓  
-Grafana displays monitoring dashboards  
+Python  
+Apache Kafka  
+Zookeeper  
+TimescaleDB (PostgreSQL)  
+Docker  
+Prometheus  
+Grafana  
 
 ---
 
-# 📊 Example Sensor Data
+# Kafka Topics
 
-```json
-{
-  "turbine_id": 4,
-  "timestamp": "2026-03-16T10:12:22",
-  "wind_speed": 14.3,
-  "power_output": 520,
-  "temperature": 41
-}
+The platform uses the following Kafka topics.
+
+| Topic | Description |
+|------|-------------|
+| windturbine-raw | Raw telemetry events |
+| windturbine-alerts | Detected anomaly events |
+| windturbine-dlq | Failed event processing messages |
+
 ---
-⚡ Running the Project
-Clone Repository
+
+# TimescaleDB Tables
+
+Processed data is stored in the following tables.
+
+| Table | Description |
+|------|-------------|
+| turbine_telemetry | Processed turbine telemetry data |
+| turbine_alerts | Detected anomalies |
+| dlq_events | Failed message events |
+
+---
+
+# Running the Platform
+
+Clone the repository.
+
+
 git clone https://github.com/Nikitha-120404/wind-turbine-streaming-data-platform.git
-cd wind-turbine-streaming-data-platform
-Setup Environment Variables
 
-Create a local environment file:
+
+Move into the project directory.
+
+
+cd wind-turbine-streaming-data-platform
+
+
+Create environment variables file.
+
 
 cp .env.example .env
-Start the Platform
 
-Run all services using Docker:
 
-docker-compose up --build
-🌐 Service Endpoints
+Start all services using Docker.
 
-Grafana
-http://localhost:3000
 
-Prometheus
-http://localhost:9090
+docker compose up -d
 
-TimescaleDB
-localhost:5432
 
-🧪 Running Tests
+---
+
+# Accessing the Services
+
+| Service | URL |
+|------|------|
+Grafana Dashboard | http://localhost:3000 |
+Prometheus Metrics | http://localhost:9090 |
+Ops API | http://localhost:8000 |
+
+---
+
+# Kafka Streaming Logs
+
+The platform continuously processes streaming telemetry data through Kafka.
+
+![Kafka Streaming Output](images/kafka_stream_output.png)
+
+---
+
+# Prometheus Metrics
+
+Prometheus collects metrics from all services including processors and APIs.
+
+![Prometheus Metrics](images/prometheus_metrics.png)
+
+---
+
+# Grafana Dashboard
+
+Grafana visualizes the system metrics and service health.
+
+![Grafana Dashboard](images/grafana_dashboard.png)
+
+---
+
+# TimescaleDB Stored Data
+
+Processed telemetry data is stored in TimescaleDB tables.
+
+![TimescaleDB Output](images/timescaledb_output.png)
+
+---
+
+# Sample Output Data
+
+Example telemetry data generated by the platform.
+
+
+sample_output/telemetry_sample.csv
+
+
+Example anomaly alert data.
+
+
+sample_output/alerts_sample.csv
+
+
+---
+
+# Testing
+
+The project includes unit and integration tests.
+
+Run tests using:
+
+
 pytest
-👩‍💻 Author
 
-Nikitha Mandla
-Computer Science Student
+
+---
+
+# Author
+
+Nikitha Mandla  
+Computer Science Student  
 University of Missouri – Kansas City
-
-GitHub
-https://github.com/Nikitha-120404
