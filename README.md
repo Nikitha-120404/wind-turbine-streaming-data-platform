@@ -104,6 +104,7 @@ Grafana displays monitoring dashboards
   "power_output": 520,
   "temperature": 41
 }
+---
 ⚡ Running the Project
 Clone Repository
 git clone https://github.com/Nikitha-120404/wind-turbine-streaming-data-platform.git
