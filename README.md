@@ -165,7 +165,7 @@ Prometheus collects metrics from all services including processors and APIs.
 
 Grafana visualizes the system metrics and service health.
 
-![Grafana Dashboard](images/grafana_dashboard.png)
+![Grafana Dashboard](images/grafana_dashboard..png)
 
 ---
 
