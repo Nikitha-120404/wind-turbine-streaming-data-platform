@@ -145,6 +145,14 @@ Ops API | http://localhost:8000 |
 
 ---
 
+# ⚙️ Docker Services Overview
+
+The platform is deployed using Docker Compose with multiple services running together.
+
+![Docker Services](images/docker_services_dashboard.png)
+
+---
+
 # Kafka Streaming Logs
 
 The platform continuously processes streaming telemetry data through Kafka.
